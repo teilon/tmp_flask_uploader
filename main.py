@@ -4,7 +4,7 @@ from flask import render_template
 import requests
 
 app = Flask(__name__)
-SECRET_KEY = '0000000001'
+SECRET_KEY = '123'
 
 
 @app.route('/', methods=['GET'])
@@ -19,10 +19,23 @@ def index_post():
 
     file = request.files['file']
     month = request.form['month']
-
     print(month)
-    if month in ['aug', 'sep']:
-        print('OK!')
+
+    files = {'data': (file.filename, file.stream, file.mimetype)}
+    r = requests.post(
+        "http://95.213.252.26/api/save-data/",
+        files=files,
+        data={'month': month, 'secret': SECRET_KEY}
+    )
+    # print(r.status_code, r.reason)
+    if r.status_code == requests.codes.ok:
+        resp = r.json()
+        print(resp)
+
+    return render_template('index.html')
+
+    # if month in ['aug', 'sep']:
+    #     print('OK!')
         # req = requests.request(
         #     method='POST',
         #     # url='http://127.0.0.1:5001/api/save-image/',
@@ -39,11 +52,13 @@ def index_post():
         #         secret=SECRET_KEY
         #     )
         # )
-        files = {'data': (file.filename, file.stream, file.mimetype)}
-        data = {'month': month, 'secret': SECRET_KEY}
-        req = requests.post(url='http://95.213.252.26/api/save-data/',
-                            files=files,
-                            data=data)
+
+        # files = {'data': (file.filename, file.stream, file.mimetype)}
+        # data = {'month': month, 'secret': SECRET_KEY}
+        # req = requests.post(url='http://95.213.252.26/api/save-data/',
+        #                     # files=files,
+        #                     data=data)
+
 
         # with open('sample_plan.xml', 'rb') as payload:
         #     headers = {'auth-token': 'abCdeFgh'}
@@ -51,14 +66,11 @@ def index_post():
         #     req = requests.post(url='http://abc123.com/index.php/plan/', \
         #                         headers=headers, files=files)
 
-        print('OK!OK!')
-        print(req.status_code)
-
-        if req.status_code == requests.codes.ok:
-            resp = req.json()
-            print(resp)
-
-        print('OK!OK!OK!')
+        # if req.status_code == requests.codes.ok:
+        #     resp = req.json()
+        #     print(resp)
+        #
+        # print('OK!OK!OK!')
 
 #         https://dev-gang.ru/article/python-flask-otpravlyaem-fayly-i-dannye-formy-iz-odnogo-servisa-v-drugoy/
 # https://codex.so/python-flask
