@@ -28,11 +28,11 @@ def index_post():
         data={'month': month, 'secret': SECRET_KEY}
     )
     # print(r.status_code, r.reason)
-    if r.status_code == requests.codes.ok:
-        resp = r.json()
-        print(resp)
+    # if r.status_code == requests.codes.ok:
+    resp = r.json()
+    result = '{} : {}'.format(r.status_code, r.reason)
 
-    return render_template('index.html')
+    return render_template('ok.html', result=resp)
 
     # if month in ['aug', 'sep']:
     #     print('OK!')
